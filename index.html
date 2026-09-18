@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Marketing Campaign & Lead Generation System | Appin Technology Capstone</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel CDN for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide-react@0.380.0/dist/umd/lucide-react.min.js"></script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --color-bg-dark: #090d16;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--color-bg-dark);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.25);
+    }
+    .glass-input {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .gradient-btn:hover {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.55);
+    }
+    .badge-indigo {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-cyan {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      position: relative;
+    }
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px;
+      width: 16px; height: 16px;
+      background-color: rgba(16, 185, 129, 0.4);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      70% { transform: scale(1.6); opacity: 0; }
+      100% { transform: scale(0.95); opacity: 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+  <div id="root"></div>
+
+  <!-- React Application Logic -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Mock initial data per Roshini (3).docx
+    const initialLeads = [
+      { Lead_ID: 'LD-2026-001', Full_Name: 'Ananya Sharma', Email_Address: 'ananya.sharma@techcorp.in', Phone_Number: '+91 98765 43210', Traffic_Source: 'Google Ads (PPC)', Campaign_ID: 'CMP-GGL-SEO-01', Conversion_Status: 'Converted', Submission_Date: '2026-09-17 08:30:15', Service_Interest: 'Digital Marketing Audit & SEO' },
+      { Lead_ID: 'LD-2026-002', Full_Name: 'Vikramaditya Rao', Email_Address: 'v.rao@growthscale.com', Phone_Number: '+91 98123 76543', Traffic_Source: 'Meta Social Ads', Campaign_ID: 'CMP-META-LEAD-02', Conversion_Status: 'Contacted', Submission_Date: '2026-09-17 07:15:42', Service_Interest: 'Social Media Management' },
+      { Lead_ID: 'LD-2026-003', Full_Name: 'Priya Sundaram', Email_Address: 'priya@sundaramlogistics.org', Phone_Number: '+91 97890 12345', Traffic_Source: 'Organic SEO', Campaign_ID: 'SEO-ORGANIC-HUB', Conversion_Status: 'New Lead', Submission_Date: '2026-09-17 06:45:10', Service_Interest: 'Pay-Per-Click Advertising' },
+      { Lead_ID: 'LD-2026-004', Full_Name: 'Rajesh Kumar', Email_Address: 'rkumar@innovatecloud.io', Phone_Number: '+91 99400 88221', Traffic_Source: 'Google Ads (PPC)', Campaign_ID: 'CMP-GGL-PPC-03', Conversion_Status: 'Contacted', Submission_Date: '2026-09-16 19:20:00', Service_Interest: 'Full Growth Funnel Setup' },
+      { Lead_ID: 'LD-2026-005', Full_Name: 'Kavitha Patel', Email_Address: 'kavitha@pateldesigns.com', Phone_Number: '+91 96555 43219', Traffic_Source: 'Meta Social Ads', Campaign_ID: 'CMP-META-CAROUSEL-01', Conversion_Status: 'Converted', Submission_Date: '2026-09-16 14:10:33', Service_Interest: 'Content Creation & Branding' }
+    ];
+
+    const initialKeywords = [
+      { id: 1, keyword: 'digital marketing agency near me', intent: 'Commercial', volume: 18500, kd: 45, cpc: '₹85.00', matchType: 'Broad Match' },
+      { id: 2, keyword: 'best seo services for small business', intent: 'Transactional', volume: 12200, kd: 58, cpc: '₹140.00', matchType: 'Exact Match' },
+      { id: 3, keyword: 'google ads campaign management', intent: 'Transactional', volume: 9400, kd: 62, cpc: '₹195.00', matchType: 'Phrase Match' },
+      { id: 4, keyword: 'social media lead generation cost', intent: 'Informational', volume: 6800, kd: 32, cpc: '₹65.00', matchType: 'Broad Match' },
+      { id: 5, keyword: 'high converting landing page design', intent: 'Commercial', volume: 14100, kd: 41, cpc: '₹110.00', matchType: 'Phrase Match' }
+    ];
+
+    const initialCampaigns = [
+      { id: 'CMP-GGL-PPC-01', name: 'Google Ads - Lead Capture Search Campaign', platform: 'Google Search PPC', budget: 15000, spent: 8450, impressions: 48200, clicks: 3410, leads: 184, status: 'Active', cpl: '₹45.92', roas: '4.2x' },
+      { id: 'CMP-META-LEAD-02', name: 'Meta Ads - Retargeting Carousel Campaign', platform: 'Meta Social Ads', budget: 12000, spent: 6900, impressions: 62100, clicks: 2950, leads: 142, status: 'Active', cpl: '₹48.59', roas: '3.8x' },
+      { id: 'CMP-SEO-HUB-03', name: 'Organic SEO - Technical Growth Hub', platform: 'Organic SEO', budget: 5000, spent: 3200, impressions: 38900, clicks: 4120, leads: 198, status: 'Active', cpl: '₹16.16', roas: '6.5x' }
+    ];
+
+    const documentMeta = {
+      studentName: 'ROSHINI T',
+      regNo: '731223205029',
+      degree: 'Bachelor of Technology in Information Technology',
+      college: 'JKK Munirajah College of Technology (Autonomous), T.N.Palayam, Gobi, Erode',
+      company: 'Appin Technology Private Limited',
+      academicYear: '2025-2026',
+      guide: 'Dr. N. SATHYABALAJI, Associate Professor & Head, IT Dept',
+      projectTitle: 'Digital Marketing Campaign & Lead Generation System',
+      weeklyLog: [
+        { week: 'Week 1', title: 'Fundamentals & Market Audit', summary: 'Search Engine fundamentals, Google Search Console indexing, keyword research with SEMrush and Keyword Planner, buyer persona mapping.' },
+        { week: 'Week 2', title: 'Social Media & Content Strategy', summary: 'Meta Business Suite, promotional banners & story layouts on Canva, persuasive ad copy with ChatGPT, customer audience targeting.' },
+        { week: 'Week 3', title: 'Paid Ads & Email Automation', summary: 'Pay-Per-Click (PPC) Search Ads on Google Ads Manager, match types, negative keywords, automated welcome email drip workflow in Mailchimp.' },
+        { week: 'Week 4', title: 'Analytics, Optimization & Documentation', summary: 'Google Analytics 4 (GA4) event tracking, conversion goals, CPA & ROAS optimization, A/B ad variation testing, final capstone project report compilation.' }
+      ]
+    };
+
+    // Component: App Root
+    function App() {
+      const [activeTab, setActiveTab] = useState('landing');
+      const [leads, setLeads] = useState(initialLeads);
+      const [keywords, setKeywords] = useState(initialKeywords);
+      const [campaigns, setCampaigns] = useState(initialCampaigns);
+
+      const handleAddLead = (newLead) => {
+        setLeads(prev => [newLead, ...prev]);
+      };
+
+      const handleUpdateLeadStatus = (leadId, newStatus) => {
+        setLeads(prev => prev.map(l => l.Lead_ID === leadId ? { ...l, Conversion_Status: newStatus } : l));
+      };
+
+      const handleDeleteLead = (leadId) => {
+        setLeads(prev => prev.filter(l => l.Lead_ID !== leadId));
+      };
+
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+          {/* Header & Nav */}
+          <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('landing')}>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-black text-indigo-400">⚡</div>
+                  </div>
+                  <div>
+                    <h1 className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                      GrowthFunnel<span className="text-indigo-400">Pro</span>
+                    </h1>
+                    <p className="text-[11px] text-slate-400 font-medium">Appin Tech Capstone • Roshini T (731223205029)</p>
+                  </div>
+                </div>
+
+                <div className="hidden lg:flex items-center gap-4 bg-slate-900/60 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <span className="pulse-dot"></span>
+                    <span className="font-semibold text-emerald-400">System Active</span>
+                  </div>
+                  <div className="h-3.5 w-px bg-slate-700"></div>
+                  <div>Target ROAS: <span className="text-indigo-400 font-bold">4.2x</span></div>
+                  <div className="h-3.5 w-px bg-slate-700"></div>
+                  <div>Live Leads: <span className="text-pink-400 font-bold">{leads.length}</span></div>
+                </div>
+
+                <button 
+                  onClick={() => setActiveTab('crm')} 
+                  className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30 transition-all"
+                >
+                  View Leads ({leads.length})
+                </button>
+              </div>
+            </div>
+
+            {/* Nav Tabs */}
+            <nav className="bg-slate-900/50 border-t border-slate-800/60 overflow-x-auto">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 py-1.5">
+                {[
+                  { id: 'landing', label: 'Lead Capture Landing Page', badge: 'Tier 2 Funnel' },
+                  { id: 'builder', label: 'Ad Campaign Studio', badge: 'PPC & Meta' },
+                  { id: 'seo', label: 'SEO Audit & Keywords', badge: 'Analyzer' },
+                  { id: 'analytics', label: 'GA4 Analytics & ROI', badge: 'Realtime' },
+                  { id: 'crm', label: 'Lead Database CRM', badge: `${leads.length} Records` },
+                  { id: 'email', label: 'Mailchimp Drip', badge: 'Automation' },
+                  { id: 'report', label: 'Capstone Report', badge: 'Roshini (3)' }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                      activeTab === item.id
+                        ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                      activeTab === item.id ? 'bg-indigo-500/30 text-indigo-200' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </nav>
+          </header>
+
+          {/* Body Content */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
+            {activeTab === 'landing' && <LandingPageView onAddLead={handleAddLead} setActiveTab={setActiveTab} />}
+            {activeTab === 'builder' && <CampaignBuilderView />}
+            {activeTab === 'seo' && <SEOAuditView keywords={keywords} />}
+            {activeTab === 'analytics' && <AnalyticsView leads={leads} campaigns={campaigns} />}
+            {activeTab === 'crm' && <CRMView leads={leads} onUpdateStatus={handleUpdateLeadStatus} onDelete={handleDeleteLead} onAddLead={handleAddLead} />}
+            {activeTab === 'email' && <EmailView />}
+            {activeTab === 'report' && <ReportView docMeta={documentMeta} />}
+          </main>
+
+          {/* Footer */}
+          <footer className="mt-auto border-t border-slate-900 bg-slate-950/90 py-6 text-center text-xs text-slate-500">
+            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <span className="font-bold text-slate-300">Digital Marketing Growth Funnel & Lead Generation System</span>
+                <span className="mx-2">•</span>
+                <span>Appin Technology Internship Capstone</span>
+              </div>
+              <div>
+                Submitted by <span className="text-indigo-400 font-bold">ROSHINI T (731223205029)</span> • JKK Munirajah College of Technology
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    // 1. Landing Page View
+    function LandingPageView({ onAddLead, setActiveTab }) {
+      const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', trafficSource: 'Google Ads (PPC)', serviceInterest: 'Digital Marketing Audit & SEO' });
+      const [isSubmitting, setIsSubmitting] = useState(false);
+      const [submittedLead, setSubmittedLead] = useState(null);
+      const [estBudget, setEstBudget] = useState(15000);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!formData.fullName || !formData.email || !formData.phone) return;
+
+        setIsSubmitting(true);
+        setTimeout(() => {
+          const lead = {
+            Lead_ID: `LD-2026-${Math.floor(100 + Math.random() * 900)}`,
+            Full_Name: formData.fullName,
+            Email_Address: formData.email,
+            Phone_Number: formData.phone,
+            Traffic_Source: formData.trafficSource,
+            Campaign_ID: `CMP-LIVE-LIVE`,
+            Conversion_Status: 'New Lead',
+            Submission_Date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            Service_Interest: formData.serviceInterest
+          };
+          onAddLead(lead);
+          setIsSubmitting(false);
+          setSubmittedLead(lead);
+          if (window.confetti) confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+        }, 700);
+      };
+
+      const estLeads = Math.round(estBudget / 45);
+      const estRevenue = Math.round(estLeads * 3500);
+
+      return (
+        <div className="space-y-16 animate-fade-in">
+          <section className="relative pt-6 pb-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              <div className="lg:col-span-7 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-xs font-semibold text-indigo-300">
+                  <span>Proven 3-Tier Lead Capture Architecture</span>
+                  <span className="bg-indigo-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">ROAS 4.2x</span>
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight">
+                  Accelerate Your Brand's <br />
+                  <span className="gradient-text">Digital Growth Funnel</span>
+                </h1>
+                <p className="text-slate-300 text-base max-w-xl">
+                  Transform search traffic into verified, high-intent sales leads. Complete automated digital marketing pipeline with Google Ads PPC, Meta Social Ads, On-Page SEO, and GA4 event tracking.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 max-w-md">
+                  <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <p className="text-xl font-black text-indigo-400">34%↑</p>
+                    <p className="text-[11px] text-slate-400">Mobile Form Rate</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <p className="text-xl font-black text-emerald-400">₹45.9</p>
+                    <p className="text-[11px] text-slate-400">Avg Cost / Lead</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <p className="text-xl font-black text-pink-400">&lt;2 sec</p>
+                    <p className="text-[11px] text-slate-400">Landing Speed</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5">
+                <div className="glass-panel p-6 sm:p-8">
+                  <div className="mb-4">
+                    <h2 className="text-lg font-bold text-white flex items-center justify-between">
+                      <span>Get Growth Consultation</span>
+                      <span className="badge-emerald text-[10px]">Tier 2 Funnel</span>
+                    </h2>
+                    <p className="text-xs text-slate-400">Fill form to trigger automated CRM entry & GA4 event.</p>
+                  </div>
+
+                  {submittedLead ? (
+                    <div className="space-y-4 text-center py-4">
+                      <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center font-black text-2xl">
+                        ✓
+                      </div>
+                      <h3 className="text-base font-bold text-white">Lead Successfully Captured!</h3>
+                      <p className="text-xs text-slate-300">Lead ID: <span className="font-mono text-indigo-400 font-bold">{submittedLead.Lead_ID}</span></p>
+                      <div className="flex gap-2 pt-2">
+                        <button onClick={() => setSubmittedLead(null)} className="w-full py-2 bg-slate-800 text-xs font-semibold text-slate-200 rounded-lg">Submit Another</button>
+                        <button onClick={() => setActiveTab('crm')} className="w-full gradient-btn text-xs py-2">View in CRM →</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+                        <input type="text" required placeholder="e.g. Roshini T" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} className="glass-input w-full text-xs" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1">Work Email *</label>
+                        <input type="email" required placeholder="roshini@example.com" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="glass-input w-full text-xs" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1">Phone Number *</label>
+                        <input type="tel" required placeholder="+91 98765 43210" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="glass-input w-full text-xs" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1">Traffic Attribution Source</label>
+                        <select value={formData.trafficSource} onChange={e => setFormData({...formData, trafficSource: e.target.value})} className="glass-input w-full text-xs bg-slate-900">
+                          <option value="Google Ads (PPC)">Google Ads (PPC)</option>
+                          <option value="Meta Social Ads">Meta Social Ads</option>
+                          <option value="Organic SEO">Organic SEO</option>
+                          <option value="Mailchimp Drip">Mailchimp Drip</option>
+                        </select>
+                      </div>
+                      <button type="submit" disabled={isSubmitting} className="gradient-btn w-full text-xs py-2.5 mt-2 font-bold">
+                        {isSubmitting ? 'Capturing Lead...' : 'Submit Lead & Trigger Pipeline'}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Estimator */}
+          <section className="glass-panel p-6">
+            <h3 className="text-lg font-bold text-white mb-2">Campaign Budget & ROI Estimator</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              <div className="lg:col-span-7 space-y-3">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-300">Monthly Ad Budget:</span>
+                  <span className="text-indigo-400 font-mono font-bold text-sm">₹{estBudget.toLocaleString()}</span>
+                </div>
+                <input type="range" min="5000" max="100000" step="5000" value={estBudget} onChange={e => setEstBudget(Number(e.target.value))} className="w-full accent-indigo-500 cursor-pointer" />
+              </div>
+              <div className="lg:col-span-5 grid grid-cols-2 gap-3 bg-slate-900 p-4 rounded-xl border border-slate-800 text-xs">
+                <div><p className="text-slate-400">Est. Leads</p><p className="text-xl font-black text-indigo-400 font-mono">{estLeads}</p></div>
+                <div><p className="text-slate-400">Est. ROAS</p><p className="text-xl font-black text-emerald-400 font-mono">4.2x</p></div>
+                <div className="col-span-2 pt-2 border-t border-slate-800"><p className="text-slate-400">Est. Funnel Revenue</p><p className="text-lg font-black text-white font-mono">₹{estRevenue.toLocaleString()}</p></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    // 2. Campaign Builder View
+    function CampaignBuilderView() {
+      const [platform, setPlatform] = useState('google');
+      const [headline, setHeadline] = useState('Appin Digital Marketing Academy');
+      const [desc, setDesc] = useState('Boost your business leads by 300%. Get certified hands-on digital marketing training and capstone growth funnel architecture.');
+      const [displayUrl, setDisplayUrl] = useState('appin-technology.com/digital-growth');
+      const [keywords, setKeywords] = useState(['digital marketing course', 'seo agency appin']);
+
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+              <span className="badge-indigo">Module 3 & 4</span>
+              <h2 className="text-2xl font-bold text-white mt-1">Ad Campaign & Social Creative Studio</h2>
+            </div>
+            <div className="flex bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs">
+              <button onClick={() => setPlatform('google')} className={`px-3 py-1.5 rounded font-semibold ${platform === 'google' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>Google PPC</button>
+              <button onClick={() => setPlatform('meta')} className={`px-3 py-1.5 rounded font-semibold ${platform === 'meta' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>Meta Social Ads</button>
+            </div>
+          </div>
+
+          {platform === 'google' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7 glass-panel p-6 space-y-4">
+                <h3 className="text-base font-bold text-white">Google Search Ad Setup</h3>
+                <div><label className="block text-xs text-slate-300 mb-1">Headline</label><input type="text" value={headline} onChange={e => setHeadline(e.target.value)} className="glass-input w-full text-xs" /></div>
+                <div><label className="block text-xs text-slate-300 mb-1">Display URL</label><input type="text" value={displayUrl} onChange={e => setDisplayUrl(e.target.value)} className="glass-input w-full text-xs font-mono" /></div>
+                <div><label className="block text-xs text-slate-300 mb-1">Description</label><textarea rows="3" value={desc} onChange={e => setDesc(e.target.value)} className="glass-input w-full text-xs"></textarea></div>
+              </div>
+              <div className="lg:col-span-5 space-y-3">
+                <p className="text-xs font-semibold text-indigo-400">Live SERP Preview Card</p>
+                <div className="bg-slate-900 border border-slate-700 p-5 rounded-xl space-y-2">
+                  <p className="text-[10px] text-slate-400"><span className="bg-slate-800 text-slate-200 px-1 rounded font-bold">Ad</span> https://{displayUrl}</p>
+                  <h4 className="text-base font-bold text-indigo-400 hover:underline cursor-pointer">{headline}</h4>
+                  <p className="text-xs text-slate-300">{desc}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="glass-panel p-6 space-y-4 max-w-2xl mx-auto">
+              <h3 className="text-base font-bold text-white">Meta Social Ad Creative Preview</h3>
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div className="h-44 bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 p-4 rounded-lg flex flex-col justify-between">
+                  <span className="badge-indigo text-[10px] self-start">Appin Capstone</span>
+                  <div><h4 className="text-lg font-black text-white">3-Tier Growth Funnel</h4><p className="text-xs text-slate-300">ROAS 4.2x • Mobile Form Optimized</p></div>
+                </div>
+                <p className="text-xs text-slate-300">Stop guessing ad ROI! Capture verified leads digitally.</p>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // 3. SEO Audit View
+    function SEOAuditView({ keywords }) {
+      const [title, setTitle] = useState('Digital Marketing Campaign & Growth Funnel | Appin Technology');
+      const [desc, setDesc] = useState('Automated 3-tier digital growth funnel setup, Google Ads PPC, Meta Social campaigns, and GA4 event tracking analytics.');
+
+      const score = (title.length >= 30 && title.length <= 65 ? 40 : 20) + (desc.length >= 120 && desc.length <= 160 ? 40 : 20) + 20;
+
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="border-b border-slate-800 pb-4">
+            <span className="badge-indigo">Module 2</span>
+            <h2 className="text-2xl font-bold text-white mt-1">On-Page SEO Analyzer & Keyword Matrix</h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-7 glass-panel p-6 space-y-4">
+              <div><label className="block text-xs font-semibold text-slate-300 mb-1">Meta Title ({title.length}/65 chars)</label><input type="text" value={title} onChange={e => setTitle(e.target.value)} className="glass-input w-full text-xs" /></div>
+              <div><label className="block text-xs font-semibold text-slate-300 mb-1">Meta Description ({desc.length}/160 chars)</label><textarea rows="3" value={desc} onChange={e => setDesc(e.target.value)} className="glass-input w-full text-xs"></textarea></div>
+            </div>
+            <div className="lg:col-span-5 glass-panel p-6 text-center space-y-2">
+              <h4 className="text-sm font-bold text-white">SEO Health Score</h4>
+              <p className="text-4xl font-black text-emerald-400 font-mono">{score} / 100</p>
+              <p className="text-xs text-slate-400">Mobile viewport & title length validated.</p>
+            </div>
+          </div>
+
+          <div className="glass-panel p-6">
+            <h3 className="text-base font-bold text-white mb-3">SEMrush Keyword Research Matrix</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-900 text-slate-400 uppercase font-semibold text-[10px]">
+                  <tr><th className="p-3">Keyword Query</th><th className="p-3">Intent</th><th className="p-3">Monthly Vol</th><th className="p-3">KD%</th><th className="p-3">CPC</th></tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800">
+                  {keywords.map(k => (
+                    <tr key={k.id}>
+                      <td className="p-3 font-semibold text-white">{k.keyword}</td>
+                      <td className="p-3"><span className="badge-indigo text-[10px]">{k.intent}</span></td>
+                      <td className="p-3 font-mono">{k.volume.toLocaleString()}</td>
+                      <td className="p-3 font-mono text-emerald-400">{k.kd}%</td>
+                      <td className="p-3 font-mono text-indigo-300">{k.cpc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 4. Analytics View
+    function AnalyticsView({ leads, campaigns }) {
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="border-b border-slate-800 pb-4">
+            <span className="badge-emerald">Module 5 • GA4 Integration</span>
+            <h2 className="text-2xl font-bold text-white mt-1">Google Analytics 4 & ROAS Dashboard</h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="glass-card p-4 space-y-1"><p className="text-xs text-slate-400">Total Impressions</p><p className="text-2xl font-black text-white font-mono">60,700</p></div>
+            <div className="glass-card p-4 space-y-1"><p className="text-xs text-slate-400">Ad Clicks</p><p className="text-2xl font-black text-white font-mono">4,260</p></div>
+            <div className="glass-card p-4 space-y-1"><p className="text-xs text-slate-400">Total Leads</p><p className="text-2xl font-black text-white font-mono">{leads.length}</p></div>
+            <div className="glass-card p-4 space-y-1"><p className="text-xs text-slate-400">Avg CPL</p><p className="text-2xl font-black text-emerald-400 font-mono">₹45.9</p></div>
+          </div>
+
+          <div className="glass-panel p-6 space-y-4">
+            <h3 className="text-base font-bold text-white">3-Tier Growth Funnel Conversion Visual</h3>
+            <div className="space-y-3">
+              <div><div className="flex justify-between text-xs mb-1"><span>Tier 1: Impressions</span><span>60,700 (100%)</span></div><div className="h-5 bg-indigo-600 rounded"></div></div>
+              <div><div className="flex justify-between text-xs mb-1"><span>Tier 2: Clicks</span><span>4,260 (7.0%)</span></div><div className="h-5 bg-purple-600 rounded w-1/4"></div></div>
+              <div><div className="flex justify-between text-xs mb-1"><span>Tier 3: Form Leads</span><span>{leads.length} (4.3%)</span></div><div className="h-5 bg-emerald-500 rounded w-1/6"></div></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 5. CRM View
+    function CRMView({ leads, onUpdateStatus, onDelete, onAddLead }) {
+      const [search, setSearch] = useState('');
+      const filtered = leads.filter(l => l.Full_Name.toLowerCase().includes(search.toLowerCase()) || l.Email_Address.toLowerCase().includes(search.toLowerCase()));
+
+      const exportCSV = () => {
+        const rows = ['Lead_ID,Full_Name,Email_Address,Phone_Number,Traffic_Source,Conversion_Status,Submission_Date', ...leads.map(l => `${l.Lead_ID},"${l.Full_Name}",${l.Email_Address},${l.Phone_Number},"${l.Traffic_Source}",${l.Conversion_Status},"${l.Submission_Date}"`)].join('\n');
+        const link = document.createElement('a');
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURI(rows);
+        link.download = 'Lead_Database_Schema_Export.csv';
+        link.click();
+      };
+
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <span className="badge-indigo">Section 4.10 Schema</span>
+              <h2 className="text-2xl font-bold text-white mt-1">Lead Database CRM System</h2>
+            </div>
+            <button onClick={exportCSV} className="px-4 py-2 bg-slate-800 text-xs font-semibold rounded-lg text-slate-200">Export CSV</button>
+          </div>
+
+          <div className="glass-panel p-4">
+            <input type="text" placeholder="Search leads by name or email..." value={search} onChange={e => setSearch(e.target.value)} className="glass-input w-full text-xs max-w-sm" />
+          </div>
+
+          <div className="glass-panel overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-900 text-slate-400 uppercase font-semibold text-[10px]">
+                <tr><th className="p-3">Lead ID</th><th className="p-3">Customer Name</th><th className="p-3">Email & Phone</th><th className="p-3">Source</th><th className="p-3">Status</th><th className="p-3">Submission Date</th><th className="p-3">Action</th></tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {filtered.map(l => (
+                  <tr key={l.Lead_ID}>
+                    <td className="p-3 font-mono text-indigo-400 font-bold">{l.Lead_ID}</td>
+                    <td className="p-3 font-semibold text-white">{l.Full_Name}</td>
+                    <td className="p-3 font-mono text-slate-300">{l.Email_Address}<br/><span className="text-slate-500 text-[10px]">{l.Phone_Number}</span></td>
+                    <td className="p-3"><span className="badge-indigo text-[10px]">{l.Traffic_Source}</span></td>
+                    <td className="p-3">
+                      <select value={l.Conversion_Status} onChange={e => onUpdateStatus(l.Lead_ID, e.target.value)} className="bg-slate-900 text-xs border border-slate-700 rounded p-1 text-slate-200">
+                        <option value="New Lead">New Lead</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Converted">Converted</option>
+                      </select>
+                    </td>
+                    <td className="p-3 font-mono text-slate-400">{l.Submission_Date}</td>
+                    <td className="p-3"><button onClick={() => onDelete(l.Lead_ID)} className="text-pink-400 text-xs font-bold hover:underline">Delete</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // 6. Email View
+    function EmailView() {
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="border-b border-slate-800 pb-4">
+            <span className="badge-emerald">Section 3.5 & Module 5</span>
+            <h2 className="text-2xl font-bold text-white mt-1">Mailchimp Email Drip Studio</h2>
+          </div>
+          <div className="glass-panel p-6 space-y-4 max-w-xl mx-auto">
+            <h3 className="text-base font-bold text-white">Visual Lead Nurture Sequence</h3>
+            <div className="p-4 bg-slate-900 rounded-lg text-xs space-y-2 border border-slate-800">
+              <p className="font-bold text-indigo-400">Step 1: Form Submission Trigger</p>
+              <p className="text-slate-400">Step 2: Wait 2 Minutes Buffer</p>
+              <p className="font-bold text-emerald-400">Step 3: Dispatch Welcome Drip Email & PDF</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 7. Report View
+    function ReportView({ docMeta }) {
+      return (
+        <div className="space-y-6 animate-fade-in">
+          <div className="border-b border-slate-800 pb-4">
+            <span className="badge-indigo">Roshini (3).docx Capstone Summary</span>
+            <h2 className="text-2xl font-bold text-white mt-1">{docMeta.projectTitle}</h2>
+          </div>
+
+          <div className="glass-panel p-6 space-y-4">
+            <h3 className="text-lg font-bold text-white">Bonafide Certificate Summary</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-3 bg-slate-900 rounded-lg"><p className="text-slate-400">Student</p><p className="font-bold text-white">{docMeta.studentName}</p><p className="text-indigo-400 font-mono">Reg: {docMeta.regNo}</p></div>
+              <div className="p-3 bg-slate-900 rounded-lg"><p className="text-slate-400">Degree</p><p className="font-bold text-white">{docMeta.degree}</p></div>
+              <div className="p-3 bg-slate-900 rounded-lg"><p className="text-slate-400">Company</p><p className="font-bold text-emerald-400">{docMeta.company}</p></div>
+            </div>
+          </div>
+
+          <div className="glass-panel p-6 space-y-4">
+            <h3 className="text-lg font-bold text-white">Appendix A - 4-Week Work Log Summary</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {docMeta.weeklyLog.map((l, i) => (
+                <div key={i} className="p-4 bg-slate-900 rounded-lg border-t-2 border-indigo-500 text-xs space-y-1">
+                  <span className="badge-indigo text-[10px]">{l.week}</span>
+                  <h4 className="font-bold text-white">{l.title}</h4>
+                  <p className="text-slate-400">{l.summary}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Render App
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
